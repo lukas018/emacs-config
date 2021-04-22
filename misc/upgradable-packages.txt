@@ -1,0 +1,116 @@
+org-appear: 0b3b029d58 → f9740dbd1b
+  f9740db Fix illegal elements toggling
+  2380562 add org-appear-autoentities to readme (#13)
+  1e20d00 Add entity toggling (#11)
+  4f0a70a forger previous elements when no longer necessary
+  1bd85f8 add Org version dependency
+org-pretty-table: 474ad84a8f → 87772a9469
+  87772a9 docs: add install instructions
+doct: 8ac08633ae → 67fc46c8a6
+  67fc46c Satisfy checkdoc
+auctex: 384c4b9891 → 69a7b83589
+  69a7b83 Update auctex
+  c7a24c6 Update auctex
+  1472d1d Update auctex
+  0f3639a Update auctex
+  c3d2099 Update auctex
+  b3cd666 Update auctex
+aas: e2b3edafd7 → 3076cefea0
+  3076cef Update version to 1.0
+  8c89995 Add readme badges, remove redundant cod
+mixed-pitch: d5f64b967d → 519e05f748
+  519e05f Allow customisation of the variable pitch face
+  2102126 Avoid applying remap multiple times
+emacs-everywhere: 01e031e664 → d65ba8d322
+  d65ba8d Bugfix for pasting on macOS
+  5475e1a Fix emacs-everywhere-initialise in directories
+  99997af Run melpazoid on the local repo on CI
+gif-screencast: 1145e676b1 → fa81e915c2
+  fa81e91 Version 1.2.
+elcord: 25531186c1 → 6608e0392b
+  6608e03 Merge branch 'master' of github.com:Mstrodl/elcord
+  a6b79de Add elcord-quiet to disable status messages (Closes #43)
+  b25f9a9 Make buffer details format configurable
+  66bb2e2 Merge branch 'master' of github.com:Mstrodl/elcord
+  d095456 elcord: properly format mode-name when it's not a string
+  d630210 Add support for haskell-interactive-mode (#37)
+  dc6896b Add zig-mode to elcord-mode-icon-alist
+  9bea324 Actually clear our presence when disabling elcord-mode
+  01b26d1 Add elcord-boring-buffers-regexp-list
+  76883a4 Implement a more flexible way to determine icon and text values
+  73d0276 Fix flycheck-package warnings & errors
+  e1f51f0 Whitespace fixes after previous commit
+  65d084e Add entry for mhtml-mode and ensure mode-text is a string
+  48cb945 Fix bug - On error during presence update
+  cc78a14 Squash setq's together to be consistent with rest of package
+  9a2da3c Fix typo - nil is not a type, null is
+  7c77fb6 Code cleanup & fix bug when initially connecting
+  94b0afb Make toggling of small icon configurable (#21)
+  5ad817d Make refresh rate configurable (#22)
+  61cd383 Merge pull request #19 from insipx/patch-1
+  285d97a make rust icon work with rustic-mode
+  0e0522f Run elcord process in ~ rather than cwd
+  88bc8f6 Connection State Fixes
+  1fcd1f5 Fix not setting status on reconnect
+  2c9242e Set the nonquery flag to t to avoid query prompt when killing emacs
+  e1f107f Fix stdpipe spinning at 100% CPU when discord closes pipe
+  1e1cf35 Add nix-mode icon
+  172d4f4 Add icon for when using DOOM Emacs
+  5d3efcc Add Forth icon
+  70229b3 Switch to push so that the code doesn't break under lexical-binding
+  f1411fa Reset startup time when enabling elcord
+  46e934c Add icon for golang
+  39bcaaf Kill some spare tabs
+  9e30edc Don't update the last-known position if we're in a minibuffer window
+  d2e339c Add icons for Markdown and LaTeX
+  7f0de8d Add support for Magit
+  0f311c2 Merge pull request #13 from Lgneous/master
+  288e8f6 Add customization for using the major mode as the 'main' icon
+  5e7c6ec Added support for elapsed time
+  921247a Add org-mode_icon
+  17d3e5b Add cperl and php modes (#10)
+  2224b0d Merge branch 'master' of github.com:Mstrodl/elcord
+  11ff61b Fix stdpipe bugs
+  dc40138 Merge branch 'master' of github.com:Mstrodl/elcord
+  4cac1b4 Empty presence on disconnect
+  edc003b Add mappings for IRC and Kotlin Modes
+  cf0e540 Get rid of superfluous whitespace
+  0cef4ca Only reconnect when the mode is enabled
+  3071250 Fixed typos
+  a97824e Merge pull request #1 from Zulu-Inuoe/master
+  295ff2d Point back to original repo for PR
+  8fe9c8c Use Spacemacs icon and name when on Spacemacs
+  7d2f2a0 Address checkdoc issue
+  09ddf08 Add support for more languages
+  3a13d7b Update readme with information on MELPA
+  91c665f Address melpa comments
+  343a2bd Better documentation and add autoload
+  86c44c8 Fix issues with package-lint
+  a91d0d6 make checkdoc happy
+  c5b0018 Update header with information for MELPA & packages
+  5c03723 Update documentation on client ID
+  bdf992c Remove some leftover code
+  b730d58 Make elcord a minor mode
+  da4f3c3 Merge pull request #1 from dscsk8er55/patch-1
+  b9edff9 Update README.md
+  baea90e Fix typo, rename function, and clean up some concat calls
+  17cb1ff Update README
+  7f81724 Fix line number counting and add ability to toggle showing file details
+  d1fb49f Default the client ID to mine and add some corresponding mappings
+  526867b Fix some dependency issues
+  4c5b85c Fix powershell invocation
+  4f04ba7 Upload solution for windows, where emacs cant do named pipes
+  b779502 More code cleanup
+  6b46d91 Merge remote-tracking branch 'origin/master'
+  7911760 Lots o fixes
+  607a15e Non-blocking connection retries, finally!
+  691e217 Frickin' melpa
+  de95846 MELPA wants this stuff
+  7bfcaf1 If Spacemacs, use that icon instead
+  d2e77a4 Fix minor bug
+  20bea95 Add option to disable 'Ask to join' and 'Ask to spectate' buttons
+  235f073 Fixed up docstrings
+  e5decb0 Listen for buffer name changes as well
+  88675b6 Detect ALL line number changes
+  5748481 Fixed reconnecting, sends presence faster, and fixed an issue where the first line showed as 0 when it should have been 1
+  18d8968 Initial commit

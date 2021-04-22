@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- Created by htmlize-1.56 in css mode. -->
+<html>
+  <head>
+    <title>packages.el</title>
+  <style>
+    body > pre {
+      font-size: 1rem;
+      max-width: min(100rem, 100%);
+      width: max-content;
+      white-space: pre-wrap;
+      margin: auto;
+    }
+  </style>
+    <style type="text/css">
+    <!--
+      body {
+        color: #383a42;
+        background-color: #fafafa;
+      }
+      .builtin {
+        /* font-lock-builtin-face */
+        color: #a626a4;
+      }
+      .comment {
+        /* font-lock-comment-face */
+        color: #9ca0a4;
+      }
+      .comment-delimiter {
+        /* font-lock-comment-delimiter-face */
+        color: #9ca0a4;
+      }
+      .keyword {
+        /* font-lock-keyword-face */
+        color: #e45649;
+      }
+      .string {
+        /* font-lock-string-face */
+        color: #50a14f;
+      }
+
+      a {
+        color: inherit;
+        background-color: inherit;
+        font: inherit;
+        text-decoration: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    -->
+    </style>
+  </head>
+  <body>
+    <pre>
+<span class="comment-delimiter">;; </span><span class="comment">-*- no-byte-compile: t; -*-
+</span>
+(<span class="keyword">package!</span> rotate <span class="builtin">:pin</span> <span class="string">"4e9ac3ff800880bd9b705794ef0f7c99d72900a6"</span>)
+
+(<span class="keyword">package!</span> xkcd <span class="builtin">:pin</span> <span class="string">"66e928706fd660cfdab204c98a347b49c4267bdf"</span>)
+
+(<span class="keyword">package!</span> selectric-mode <span class="builtin">:pin</span> <span class="string">"1840de71f7414b7cd6ce425747c8e26a413233aa"</span>)
+
+(<span class="keyword">package!</span> wttrin <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/wttrin"</span>))
+
+(<span class="keyword">package!</span> spray <span class="builtin">:pin</span> <span class="string">"74d9dcfa2e8b38f96a43de9ab0eb13364300cb46"</span>)
+
+(<span class="keyword">package!</span> theme-magic <span class="builtin">:pin</span> <span class="string">"844c4311bd26ebafd4b6a1d72ddcc65d87f074e3"</span>)
+
+(<span class="keyword">package!</span> elcord <span class="builtin">:pin</span> <span class="string">"25531186c10b74a10ee24990f9e967296cc70342"</span>)
+
+(<span class="keyword">package!</span> keycast <span class="builtin">:pin</span> <span class="string">"a3a0798349adf3e33277091fa8dee63173b68edf"</span>)
+
+(<span class="keyword">package!</span> gif-screencast <span class="builtin">:pin</span> <span class="string">"1145e676b160e7b1e5756f5b0f30dd31de252e1f"</span>)
+
+(<span class="keyword">package!</span> calctex <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"johnbcoughlin/calctex"</span>
+                           <span class="builtin">:files</span> (<span class="string">"*.el"</span> <span class="string">"calctex/*.el"</span> <span class="string">"calctex-contrib/*.el"</span> <span class="string">"org-calctex/*.el"</span> <span class="string">"vendor"</span>))
+  <span class="builtin">:pin</span> <span class="string">"7fa2673c64e259e04aef684ccf09ef85570c388b"</span>)
+
+(<span class="keyword">package!</span> emacs-everywhere <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/emacs-everywhere"</span>) <span class="builtin">:pin</span> nil)
+
+(<span class="keyword">package!</span> ess-view <span class="builtin">:pin</span> <span class="string">"925cafd876e2cc37bc756bb7fcf3f34534b457e2"</span>)
+
+<span class="comment-delimiter">;; </span><span class="comment">(package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "1164a6c3e501e944f1a6a2e91f15374a193bb8d3")
+</span>
+(<span class="keyword">package!</span> info-colors <span class="builtin">:pin</span> <span class="string">"47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5"</span>)
+
+(<span class="keyword">package!</span> vlf <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"m00natic/vlfi"</span> <span class="builtin">:files</span> (<span class="string">"*.el"</span>))
+  <span class="builtin">:pin</span> <span class="string">"cc02f2533782d6b9b628cec7e2dcf25b2d05a27c"</span> <span class="builtin">:disable</span> t)
+
+(<span class="keyword">package!</span> lexic <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/lexic"</span>))
+
+(<span class="keyword">package!</span> calibredb <span class="builtin">:pin</span> <span class="string">"a3b04c0c37b1e8ceff2472e21a3579e64e944528"</span>)
+
+(<span class="keyword">package!</span> nov <span class="builtin">:pin</span> <span class="string">"b3c7cc28e95fe25ce7b443e5f49e2e45360944a3"</span>)
+
+(<span class="keyword">package!</span> mixed-pitch <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/mixed-pitch"</span>) <span class="builtin">:pin</span> nil)
+
+(<span class="keyword">package!</span> screenshot <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/screenshot"</span>))
+
+(<span class="keyword">package!</span> page-break-lines <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"purcell/page-break-lines"</span>))
+
+(<span class="keyword">package!</span> aas <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"ymarco/auto-activating-snippets"</span>)
+  <span class="builtin">:pin</span> <span class="string">"e2b3edafd7aafa8c47833a70984d7404c607626c"</span>)
+(<span class="keyword">package!</span> laas <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/LaTeX-auto-activating-snippets"</span>))
+
+(<span class="keyword">package!</span> auctex <span class="builtin">:pin</span> <span class="string">"384c4b989192087144512a528bcc1949c2ab3e5b"</span>)
+
+(<span class="keyword">unpin!</span> org-mode)
+
+(<span class="keyword">package!</span> org-super-agenda <span class="builtin">:pin</span> <span class="string">"f5e80e4d0da6b2eeda9ba21e021838fa6a495376"</span>)
+
+(<span class="keyword">package!</span> doct
+  <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"progfolio/doct"</span>)
+  <span class="builtin">:pin</span> <span class="string">"8ac08633ae413a6605b6506d2739eece7475272e"</span>)
+
+(<span class="keyword">package!</span> org-pretty-table
+  <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"Fuco1/org-pretty-table"</span>) <span class="builtin">:pin</span> <span class="string">"474ad84a8fe5377d67ab7e491e8e68dac6e37a11"</span>)
+
+(<span class="keyword">package!</span> org-fragtog <span class="builtin">:pin</span> <span class="string">"0151cabc7aa9f244f82e682b87713b344d780c23"</span>)
+
+(<span class="keyword">package!</span> org-appear <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"awth13/org-appear"</span>)
+  <span class="builtin">:pin</span> <span class="string">"0b3b029d5851c77ee792727b280f062eaf2c22c7"</span>)
+
+(<span class="keyword">package!</span> org-pretty-tags <span class="builtin">:pin</span> <span class="string">"5c7521651b35ae9a7d3add4a66ae8cc176ae1c76"</span>)
+
+(<span class="keyword">package!</span> engrave-faces <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/engrave-faces"</span>))
+
+(<span class="keyword">package!</span> ox-gfm <span class="builtin">:pin</span> <span class="string">"99f93011b069e02b37c9660b8fcb45dab086a07f"</span>)
+
+(<span class="keyword">package!</span> org-ref <span class="builtin">:pin</span> <span class="string">"3ca9beb744621f007d932deb8a4197467012c23a"</span>)
+
+(<span class="keyword">package!</span> org-graph-view <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"alphapapa/org-graph-view"</span>) <span class="builtin">:pin</span> <span class="string">"13314338d70d2c19511efccc491bed3ca0758170"</span>)
+
+(<span class="keyword">package!</span> org-chef <span class="builtin">:pin</span> <span class="string">"5b461ed7d458cdcbff0af5013fbdbe88cbfb13a4"</span>)
+
+(<span class="keyword">package!</span> org-pandoc-import <span class="builtin">:recipe</span>
+  (<span class="builtin">:local-repo</span> <span class="string">"lisp/org-pandoc-import"</span> <span class="builtin">:files</span> (<span class="string">"*.el"</span> <span class="string">"filters"</span> <span class="string">"preprocessors"</span>)))
+
+(<span class="keyword">package!</span> org-roam-server <span class="builtin">:pin</span> <span class="string">"2122a61e9e9be205355c7e2c1e4b65986d6985a5"</span>)
+
+(<span class="keyword">package!</span> systemd <span class="builtin">:pin</span> <span class="string">"b6ae63a236605b1c5e1069f7d3afe06ae32a7bae"</span>)
+
+(<span class="keyword">package!</span> stan-mode <span class="builtin">:pin</span> <span class="string">"9bb858b9f1314dcf1a5df23e39f9af522098276b"</span>)
+(<span class="keyword">package!</span> company-stan <span class="builtin">:pin</span> <span class="string">"9bb858b9f1314dcf1a5df23e39f9af522098276b"</span>)
+(<span class="keyword">package!</span> eldoc-stan <span class="builtin">:pin</span> <span class="string">"9bb858b9f1314dcf1a5df23e39f9af522098276b"</span>)
+(<span class="keyword">package!</span> flycheck-stan <span class="builtin">:pin</span> <span class="string">"9bb858b9f1314dcf1a5df23e39f9af522098276b"</span>)
+(<span class="keyword">package!</span> stan-snippets <span class="builtin">:pin</span> <span class="string">"9bb858b9f1314dcf1a5df23e39f9af522098276b"</span>)
+
+(<span class="keyword">package!</span> graphviz-dot-mode <span class="builtin">:pin</span> <span class="string">"3642a0a5f41a80c8ecef7c6143d514200b80e194"</span>)
+
+(<span class="keyword">package!</span> authinfo-color-mode
+  <span class="builtin">:recipe</span> (<span class="builtin">:local-repo</span> <span class="string">"lisp/authinfo-color-mode"</span>))
+
+(<span class="keyword">package!</span> beancount <span class="builtin">:recipe</span> (<span class="builtin">:host</span> github <span class="builtin">:repo</span> <span class="string">"beancount/beancount-mode"</span>)
+  <span class="builtin">:pin</span> <span class="string">"3c04745fa539c25dc007683ad257239067c24cfe"</span>)
+
+(<span class="keyword">package!</span> org-roam <span class="builtin">:disable</span> t)
+</pre>
+  </body>
+</html>
