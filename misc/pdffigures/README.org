@@ -1,0 +1,74 @@
+#+title: Readme
+#+author: luklun
+#+date:  2021-04-10
+
+* About
+
+This package offers a convinient wrapper around pdffigures2, which is an
+automated cropping tool for pdf figures.
+
+* Basic Usage
+While in a pdf-view buffer, call command =pdffigures-crop= to extract all figures in the currently displayed page.
+The command will then show and prompt you which pictures to save.
+Pdffigures.el can also be configured to push the saved paths to the kill-ring.
+
+* Installation
+*** Build Requirements
+pdffigures2 is built using scala and therefore requires a java jdk and sbt to build.
+
+On Arch, sbt is available in the standard repos
+<#+begin_src sh
+pacman -S sbt
+#+end_src
+
+You also JDK to build. On Arch Linux jdk8 is available in the AUR, and
+can be installed using your favorite AUR-helper, e.g. paru
+<#+begin_src sh
+paru -S jdk8-adoptopenjdk
+#+end_src
+
+*** Build Process
+
+Install pdffigures2 by cloning the repo and building the source.
+I recommend using vnepveu's fork of the orginal repo, since fork fixes an error caused later
+scala versions.
+<#+begin_src sh
+git clone https://github.com/vnepveu/pdffigures2
+cd pdfgures2
+sbt assembly
+cp target/scala-<version>/pdffigures2-assembly-0.1.0.jar <some-dir-you-can-access>
+#+end_src
+
+*** PDFJam
+This package uses pdfjam to extract the relevant pages in current pdf
+pdfjam is bundled with texlive-core but can be installed separetely.
+
+*** Installing the package and Example Config
+
+With use-package and straight
+#+begin_src emacs-lisp
+(use-package pdffigures
+  :straight (:host github :repo lukas018/pdffigures.el)
+  :config
+  (setq pdffigures-output-dir "path-to-image-dir"
+        pdffigures-jar-path "path-to-jar-file")
+  :bind ("C-x C-p" . pdffigures-crop))
+#+end_src
+
+**** In Doom Emacs
+
+In packages.el
+#+begin_src emacs-lisp
+(package! pdffigures
+  :recipe (:host github :repo "lukas018/pdffigures.el"))
+#+end_src
+In config.el
+
+
+#+begin_src emacs-lisp
+(use-package!
+    :config
+  (setq pdffigures-output-dir "path-to-image-dir"
+        pdffigures-jar-path "path-to-jar-file/")
+  :bind)
+#+end_src

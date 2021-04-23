@@ -1,15 +1,11 @@
-#+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]], [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]]
-#+author: tecosaur
+#+title: Doom Emacs Configuration
+#+author: Lukas Lundmark
 
-#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/Emacs-27.1%20%E2%80%93%2028.0.50-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a>
-#+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
-#+html: <a href="https://github.com/tecosaur/emacs-config/actions"><img src="https://img.shields.io/github/workflow/status/tecosaur/emacs-config/Publish/master.svg?style=flat-square&label=publish&logo=buffer"></a>
-#+html: <a href="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/upgradable-packages.txt"><img src="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/pkg-status.svg"></a>
+This is my emacs configuration.
+It is essentially a slimmed down version of [[https://github.com/tecosaur/emacs-config][tecosaur's fantastic emacs config]] (with some extra stuff for academic writing and python programming).
 
-Here you may find my config. There is only one significant file:
+There is only one significant file:
 + =config.org=, my configuration file --- see the [[https://tecosaur.github.io/emacs-config/config.html][HTML]] or [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]] export.
-
-[[file:misc/screenshots/splash-screen.png]]
 
 =config.org= /generates/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files, as well as
 about a dozen others.
@@ -18,8 +14,6 @@ Other than that, resources are put in [[file:misc/][misc]], and you may find sub
 packages of mine in [[file:lisp/][lisp]].
 
 * Installation
-
-This is mostly a personal note, see the [[https://tecosaur.github.io/emacs-config/config.html#notes-unwary-adventurer][warning]] in my config.
 
 In order to have Doom load the config, we need to initialise the submodules, and
 generate the =init.el= once.
