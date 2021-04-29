@@ -518,7 +518,7 @@ nice selection doom provides there's no reason for me to want the defaults.
 
 
 #+begin_src emacs-lisp
-(setq doom-theme 'modus-operandi)
+(setq doom-theme 'doom-moonlight)
 (delq! t custom-theme-load-path)
 #+end_src
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
@@ -4493,3 +4493,9 @@ This can be fixed by adding an ignore rule in the list of popup-rules.
 ** EIN
 Jupyter Notebooks are perfect for doing experimental work.
 However, having to use the browser for coding is a scurge.
+
+
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Open eshell" "o s" #'eshell)
+#+end_src
