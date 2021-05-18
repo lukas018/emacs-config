@@ -36,7 +36,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 #+end_src
 
-
 ** Better defaults
 *** Simple settings
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
@@ -399,7 +398,6 @@ markdown                     ; writing docs for people to ignore
 ;;purescript                 ; javascript, but functional
 (python
  +lsp
- +pyright
  +pyenv); beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
 ;;racket                     ; a DSL for DSLs
@@ -549,9 +547,7 @@ then =ESC 12 <UP>= gets you exactly where you think.
 
 Rebound local leader to comma instead of ~SPACE~ m
 #+begin_src emacs-lisp
-(setq evil-snipe-override-evil-repeat-keys nil
-      doom-localleader-key ","
-      doom-localleader-alt-key "M-,")
+(setq evil-snipe-override-evil-repeat-keys nil)
 #+end_src
 
 I'd like some slightly nicer default buffer names
