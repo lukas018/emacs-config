@@ -242,8 +242,8 @@ doom-quit                    ; DOOM quit-message prompts when you quit Emacs
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 hydra                      ; quick documentation for related commands
-indent-guides              ; highlighted indent columns, notoriously slow
-(ligatures +extra)           ; ligatures and symbols to make your code pretty again
+;; indent-guides              ; highlighted indent columns, notoriously slow
+;; (ligatures +extra)           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
 modeline                     ; snazzy, Atom-inspired modeline, plus API
 nav-flash                    ; blink the current line after jumping
@@ -268,13 +268,13 @@ zen                          ; distraction-free coding or writing
 (evil +everywhere)           ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
-(format)                     ; automated prettiness
+format                     ; automated prettiness
 ;;god                        ; run Emacs commands without modifier keys
 ;;lispy                      ; vim for lisp, for people who don't like vim
 multiple-cursors             ; editing in many places at once
 ;;objed                      ; text object editing for the innocent
 ;;parinfer                   ; turn lisp into python, sort of
-rotate-text                  ; cycle region at point between text candidates
+;; rotate-text                  ; cycle region at point between text candidates
 snippets                     ; my elves. They type so I don't have to
 ;;word-wrap                  ; soft wrapping with language-aware indent
 #+end_src
@@ -545,10 +545,9 @@ then =ESC 12 <UP>= gets you exactly where you think.
 (setq display-line-numbers-type nil)
 #+end_src
 
-Rebound local leader to comma instead of ~SPACE~ m
+# Rebound local leader to comma instead of ~SPACE~ m
 #+begin_src emacs-lisp
 (setq evil-snipe-override-evil-repeat-keys nil)
-#+end_src
 
 I'd like some slightly nicer default buffer names
 #+begin_src emacs-lisp
@@ -1504,12 +1503,21 @@ We also need a reliable way to auto-generate and format our docstrings
         (:prefix ("d" "docstring")
          :desc "format docstring" "d" #'sphinx-doc)))
 #+end_src
+*** JavaScript and Vue.js
+
+I usually don't enjoy web-development, I even found React.js do be a bit lack luster, but Vue.js have actually changed my mind on the subject.
+However, the vue-mode in emacs is not currently being maintained.
+But thanks to some crafty people [[https://github.com/AdamNiederer/vue-mode/issues/109][here]] we can replicate it using polymode instead
+
+
 ** Themes
 The default doom themes are pretty nice, but we need more =bling= baby
 #+begin_src emacs-lisp
 (package! tron-legacy-theme)
 (package! modus-operandi-theme)
 (package! modus-vivendi-theme)
+(package! nano-theme
+  :recipe (:host github :repo "rougier/nano-theme"))
 #+end_src
 
 * Package configuration
@@ -3506,327 +3514,7 @@ Makes it easier to know where something went wrong.
     (unless (boundp 'org-latex-classes)
       (setq org-latex-classes nil)))
 #+end_src
-** LaTeX
-*** To-be-implemented ideas
-- Paste image from clipboard
-  + Determine first folder in ~graphicspath~ if applicable
-  + Ask for file name
-  + Use ~xclip~ to save file to graphics folder, or current directory (whichever applies)
-  #+begin_src shell :eval no :tangle no
-command -v xclip >/dev/null 2>&1 || { echo >&1 "no xclip"; exit 1; }
 
-if
-    xclip -selection clipboard -target image/png -o >/dev/null 2>&1
-then
-    xclip -selection clipboard -target image/png -o >$1 2>/dev/null
-    echo $1
-else
-    echo "no image"
-fi
-  #+end_src
-  + Insert figure, with filled in details as a result (activate =yasnippet= with
-    filename as variable maybe?)
-*** Compilation
-#+begin_src emacs-lisp
-(setq TeX-save-query nil
-      TeX-show-compilation t
-      TeX-command-extra-options "-shell-escape")
-(after! latex
-  (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t)))
-#+end_src
-
-For viewing the PDF, I rather like the pdf-tools viewer. While auctex is trying
-to be nice in recognising that I have some PDF viewing apps installed, I'd
-rather not have it default to using them, so let's re-order the preferences.
-#+begin_src emacs-lisp
-(setq +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
-#+end_src
-*** Snippet helpers
-**** Template
-For use in the new-file template, let's set out a nice preamble we may want to use.
-#+name: latex-nice-preamble
-#+begin_src latex :tangle no
-\\usepackage[pdfa,unicode=true,hidelinks]{hyperref}
-
-\\usepackage[dvipsnames,svgnames,table,hyperref]{xcolor}
-\\renewcommand{\\UrlFont}{\\ttfamily\\small}
-
-\\usepackage[a-2b]{pdfx} % why not be archival
-
-\\usepackage[T1]{fontenc}
-\\usepackage[osf]{newpxtext}  % Palatino
-\\usepackage{gillius}
-\\usepackage[scale=0.9]{sourcecodepro}
-
-\\usepackage[varbb]{newpxmath}
-\\usepackage{mathtools}
-\\usepackage{amssymb}
-
-\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
-% microtype makes text look nicer
-
-\\usepackage{graphicx} % include graphics
-
-\\usepackage{booktabs} % nice table rules
-#+end_src
-Then let's bind the content to a function, and define some nice helpers.
-#+begin_src emacs-lisp :noweb no-export
-(setq tec/yas-latex-template-preamble "
-<<latex-nice-preamble>>
-")
-
-(defun tec/yas-latex-get-class-choice ()
-  "Prompt user for LaTeX class choice"
-  (setq tec/yas-latex-class-choice (ivy-read "Select document class: " '("article" "scrartcl" "bmc") :def "bmc")))
-
-(defun tec/yas-latex-preamble-if ()
-  "Based on class choice prompt for insertion of default preamble"
-  (if (equal tec/yas-latex-class-choice "bmc") 'nil
-    (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
-#+end_src
-**** Deliminators
-#+begin_src emacs-lisp
-(after! tex
-  (defvar tec/tex-last-delim-char nil
-    "Last open delim expanded in a tex document")
-  (defvar tec/tex-delim-dot-second t
-    "When the `tec/tex-last-delim-char' is . a second character (this) is prompted for")
-  (defun tec/get-open-delim-char ()
-    "Exclusivly read next char to tec/tex-last-delim-char"
-    (setq tec/tex-delim-dot-second nil)
-    (setq tec/tex-last-delim-char (read-char-exclusive "Opening deliminator, recognises: 9 ( [ { < | ."))
-    (when (eql ?. tec/tex-last-delim-char)
-      (setq tec/tex-delim-dot-second (read-char-exclusive "Other deliminator, recognises: 0 9 (  ) [ ] { } < > |"))))
-  (defun tec/tex-open-delim-from-char (&optional open-char)
-    "Find the associated opening delim as string"
-    (unless open-char (setq open-char (if (eql ?. tec/tex-last-delim-char)
-                                          tec/tex-delim-dot-second
-                                        tec/tex-last-delim-char)))
-    (pcase open-char
-      (?\( "(")
-      (?9  "(")
-      (?\[ "[")
-      (?\{ "\\{")
-      (?<  "<")
-      (?|  (if tec/tex-delim-dot-second "." "|"))
-      (_   ".")))
-  (defun tec/tex-close-delim-from-char (&optional open-char)
-    "Find the associated closing delim as string"
-    (if tec/tex-delim-dot-second
-        (pcase tec/tex-delim-dot-second
-          (?\) ")")
-          (?0  ")")
-          (?\] "]")
-          (?\} "\\}")
-          (?\> ">")
-          (?|  "|")
-          (_   "."))
-      (pcase (or open-char tec/tex-last-delim-char)
-        (?\( ")")
-        (?9  ")")
-        (?\[ "]")
-        (?\{ "\\}")
-        (?<  ">")
-        (?\) ")")
-        (?0  ")")
-        (?\] "]")
-        (?\} "\\}")
-        (?\> ">")
-        (?|  "|")
-        (_   "."))))
-  (defun tec/tex-next-char-smart-close-delim (&optional open-char)
-    (and (bound-and-true-p smartparens-mode)
-         (eql (char-after) (pcase (or open-char tec/tex-last-delim-char)
-                             (?\( ?\))
-                             (?\[ ?\])
-                             (?{ ?})
-                             (?< ?>)))))
-  (defun tec/tex-delim-yas-expand (&optional open-char)
-    (yas-expand-snippet (yas-lookup-snippet "_deliminators" 'latex-mode) (point) (+ (point) (if (tec/tex-next-char-smart-close-delim open-char) 2 1)))))
-#+end_src
-*** Editor visuals
-Once again, /all hail mixed pitch mode!/
-#+begin_src emacs-lisp
-(add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
-#+end_src
-
-Let's enhance ~TeX-fold-math~ a bit
-#+begin_src emacs-lisp
-(after! latex
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
-
-(setq TeX-fold-math-spec-list
-      `(;; missing/better symbols
-        ("≤" ("le"))
-        ("≥" ("ge"))
-        ("≠" ("ne"))
-        ;; convenience shorts -- these don't work nicely ATM
-        ;; ("‹" ("left"))
-        ;; ("›" ("right"))
-        ;; private macros
-        ("ℝ" ("RR"))
-        ("ℕ" ("NN"))
-        ("ℤ" ("ZZ"))
-        ("ℚ" ("QQ"))
-        ("ℂ" ("CC"))
-        ("ℙ" ("PP"))
-        ("ℍ" ("HH"))
-        ("𝔼" ("EE"))
-        ("𝑑" ("dd"))
-        ;; known commands
-        ("" ("phantom"))
-        (,(lambda (num den) (if (and (TeX-string-single-token-p num) (TeX-string-single-token-p den))
-                                (concat num "／" den)
-                              (concat "❪" num "／" den "❫"))) ("frac"))
-        (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-necessary arg))) ("sqrt"))
-        (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-necessary arg))) ("vec"))
-        ("‘{1}’" ("text"))
-        ;; private commands
-        ("|{1}|" ("abs"))
-        ("‖{1}‖" ("norm"))
-        ("⌊{1}⌋" ("floor"))
-        ("⌈{1}⌉" ("ceil"))
-        ("⌊{1}⌉" ("round"))
-        ("𝑑{1}/𝑑{2}" ("dv"))
-        ("∂{1}/∂{2}" ("pdv"))
-        ;; fancification
-        ("{1}" ("mathrm"))
-        (,(lambda (word) (string-offset-roman-chars 119743 word)) ("mathbf"))
-        (,(lambda (word) (string-offset-roman-chars 119951 word)) ("mathcal"))
-        (,(lambda (word) (string-offset-roman-chars 120003 word)) ("mathfrak"))
-        (,(lambda (word) (string-offset-roman-chars 120055 word)) ("mathbb"))
-        (,(lambda (word) (string-offset-roman-chars 120159 word)) ("mathsf"))
-        (,(lambda (word) (string-offset-roman-chars 120367 word)) ("mathtt"))
-        )
-      TeX-fold-macro-spec-list
-      '(
-        ;; as the defaults
-        ("[f]" ("footnote" "marginpar"))
-        ("[c]" ("cite"))
-        ("[l]" ("label"))
-        ("[r]" ("ref" "pageref" "eqref"))
-        ("[i]" ("index" "glossary"))
-        ("..." ("dots"))
-        ("{1}" ("emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
-                "textbf" "textsc" "textup"))
-        ;; tweaked defaults
-        ("©" ("copyright"))
-        ("®" ("textregistered"))
-        ("™"  ("texttrademark"))
-        ("[1]:||►" ("item"))
-        ("❡❡ {1}" ("part" "part*"))
-        ("❡ {1}" ("chapter" "chapter*"))
-        ("§ {1}" ("section" "section*"))
-        ("§§ {1}" ("subsection" "subsection*"))
-        ("§§§ {1}" ("subsubsection" "subsubsection*"))
-        ("¶ {1}" ("paragraph" "paragraph*"))
-        ("¶¶ {1}" ("subparagraph" "subparagraph*"))
-        ;; extra
-        ("⬖ {1}" ("begin"))
-        ("⬗ {1}" ("end"))
-        ))
-
-(defun string-offset-roman-chars (offset word)
-  "Shift the codepoint of each character in WORD by OFFSET with an extra -6 shift if the letter is lowercase"
-  (apply 'string
-         (mapcar (lambda (c)
-                   (string-offset-apply-roman-char-exceptions
-                    (+ (if (>= c 97) (- c 6) c) offset)))
-                 word)))
-
-(defvar string-offset-roman-char-exceptions
-  '(;; lowercase serif
-    (119892 .  8462) ; ℎ
-    ;; lowercase caligraphic
-    (119994 . 8495) ; ℯ
-    (119996 . 8458) ; ℊ
-    (120004 . 8500) ; ℴ
-    ;; caligraphic
-    (119965 . 8492) ; ℬ
-    (119968 . 8496) ; ℰ
-    (119969 . 8497) ; ℱ
-    (119971 . 8459) ; ℋ
-    (119972 . 8464) ; ℐ
-    (119975 . 8466) ; ℒ
-    (119976 . 8499) ; ℳ
-    (119981 . 8475) ; ℛ
-    ;; fraktur
-    (120070 . 8493) ; ℭ
-    (120075 . 8460) ; ℌ
-    (120076 . 8465) ; ℑ
-    (120085 . 8476) ; ℜ
-    (120092 . 8488) ; ℨ
-    ;; blackboard
-    (120122 . 8450) ; ℂ
-    (120127 . 8461) ; ℍ
-    (120133 . 8469) ; ℕ
-    (120135 . 8473) ; ℙ
-    (120136 . 8474) ; ℚ
-    (120137 . 8477) ; ℝ
-    (120145 . 8484) ; ℤ
-    )
-  "An alist of deceptive codepoints, and then where the glyph actually resides.")
-
-(defun string-offset-apply-roman-char-exceptions (char)
-  "Sometimes the codepoint doesn't contain the char you expect.
-Such special cases should be remapped to another value, as given in `string-offset-roman-char-exceptions'."
-  (if (assoc char string-offset-roman-char-exceptions)
-      (cdr (assoc char string-offset-roman-char-exceptions))
-    char))
-
-(defun TeX-fold-parenthesize-as-necessary (tokens &optional suppress-left suppress-right)
-  "Add ❪ ❫ parenthesis as if multiple LaTeX tokens appear to be present"
-  (if (TeX-string-single-token-p tokens) tokens
-    (concat (if suppress-left "" "❪")
-            tokens
-            (if suppress-right "" "❫"))))
-
-(defun TeX-string-single-token-p (teststring)
-  "Return t if TESTSTRING appears to be a single token, nil otherwise"
-  (if (string-match-p "^\\\\?\\w+$" teststring) t nil))
-#+end_src
-
-Some local keybindings to make life a bit easier
-#+begin_src emacs-lisp
-(after! tex
-  (map!
-   :map LaTeX-mode-map
-   :ei [C-return] #'LaTeX-insert-item)
-  (setq TeX-electric-math '("\\(" . "")))
-#+end_src
-
-Maths deliminators can be de-emphasised a bit
-#+begin_src emacs-lisp
-;; Making \( \) less visible
-(defface unimportant-latex-face
-  '((t :inherit font-lock-comment-face :weight extra-light))
-  "Face used to make \\(\\), \\[\\] less visible."
-  :group 'LaTeX-math)
-
-(font-lock-add-keywords
- 'latex-mode
- `((,(rx (and "\\" (any "()[]"))) 0 'unimportant-latex-face prepend))
- 'end)
-
-(font-lock-add-keywords
- 'latex-mode
- `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
- 'end)
-#+end_src
-
-And enable shell escape for the preview
-#+begin_src emacs-lisp
-(setq preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
-\\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
-\\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
-#+end_src
-*** Fixes
-In case of Emacs28,
-#+begin_src emacs-lisp
-(when EMACS28+
-  (add-hook 'latex-mode-hook #'TeX-latex-mode))
-#+end_src
 ** Python
 Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
 priority of =mypyls=
@@ -4107,7 +3795,8 @@ Occasionally I want to cite something.
   :config
   (require 'doi-utils)
   (setq org-ref-bibliography-notes "~/org/ref/notes.org"
-        org-ref-default-bibliography '("~/org/ref/references.bib")
+        ;; org-ref-default-bibliography '("~/org/ref/references.bib")
+        org-ref-default-bibliography (nconc '("~/org/ref/references.bib") (file-expand-wildcards "~/Documents/data-rapport/bibliographies/*.bib"))
         org-ref-pdf-directory "~/org/ref/bibtex-pdf/"
         biblio-download-directory "~/org/ref/bibtex-pdf/"
         bibtex-completion-pdf-open-function 'org-open-file
@@ -4118,7 +3807,7 @@ Occasionally I want to cite something.
 (defun sci-hub-pdf-url (doi)
   "Get url to the pdf from SCI-HUB"
   (setq *doi-utils-pdf-url* (concat "https://sci-hub.se/" doi)
-        *doi-utils-waiting* t)
+        ,*doi-utils-waiting* t)
   ;; try to find PDF url (if it exists)
   (url-retrieve (concat "https://sci-hub.se/" doi)
             (lambda (status)
@@ -4131,7 +3820,7 @@ Occasionally I want to cite something.
                 (setq *doi-utils-pdf-url* (concat "https:" foundurl))))
                 (setq *doi-utils-waiting* nil))))
   (while *doi-utils-waiting* (sleep-for 0.1))
-   *doi-utils-pdf-url*)
+   ,*doi-utils-pdf-url*)
 
 (defadvice! luklun/doi-utils-get-bibtex-entry-pdf (&optional arg)
     :override #'doi-utils-get-bibtex-entry-pdf
@@ -4191,7 +3880,10 @@ integrates well with org-roam via org-roam-bibtex.
 (use-package! helm-bibtex
   :after org
   :config
-  (setq bibtex-completion-bibliography '("~/org/ref/references.bib")))
+  (setq
+   ;; bibtex-completion-bibliography '("~/org/ref/references.bib")
+   bibtex-completion-bibliography (nconc '("~/org/ref/references.bib") (file-expand-wildcards "~/Documents/data-rapport/bibliographies/*.bib"))
+   ))
 #+end_src
 
 The default method of opening pdfs in helm-bibtex is pretty lack-luster
@@ -4238,6 +3930,15 @@ First, we need to add some keybindings for the lookup tools
        :desc "ieee-lookup" "i" #'ieee-lookup
        :desc "arxiv-lookup" "a" #'arxiv-lookup
        :desc "open bibtex" "b" #'(lambda () (interactive) (find-file (car org-ref-default-bibliography)))))
+#+end_src
+
+We can add some useful keybindings for bibtex mode also.
+#+begin_src emacs-lisp
+(map! :map bibtex-mode-map
+      :ne "C-j" #'bibtex-next-entry
+      :ne "C-k" #'bibtex-previous-entry
+      :localleader
+      :desc "Format entry" "f" #'org-ref-clean-bibtex-entry)
 #+end_src
 
 It is pretty nice to save the bibtex entries we copy from a biblio-search directly to our default bib-file.
@@ -4494,4 +4195,13 @@ However, having to use the browser for coding is a scurge.
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Open eshell" "o s" #'eshell)
+#+end_src
+
+
+* MISC
+Some small fixes I need right now
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-classes
+             '("foireport" "\\documentclass{foireport}"))
+
 #+end_src
