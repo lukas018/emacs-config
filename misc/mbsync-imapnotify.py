@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# [[file:../config.org::*Config transcoding & service management][Config transcoding & service management:2]]
 from pathlib import Path
 import json
 import re
@@ -346,3 +347,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+# Config transcoding & service management:2 ends here
