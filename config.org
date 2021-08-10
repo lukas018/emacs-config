@@ -97,6 +97,22 @@ Default Emacs have a lot of useful methods of storing information and locations.
        :desc "Increment register" "+" 'increment-register
        :desc "Point to register" "SPC" 'point-to-register))
 #+end_src
+*** Navigation
+Some more convinient ways to move arround
+
+This enables us to use evil snipe when in visual mode
+#+begin_src emacs-lisp :tangle yes
+(after! evil-snipe
+  (define-key evil-snipe-parent-transient-map (kbd "C-;")
+  (evilem-create 'evil-snipe-repeat
+                 :bind ((evil-snipe-scope 'buffer)
+                        (evil-snipe-enable-highlight)
+                        (evil-snipe-enable-incremental-highlight))))
+
+  (evil-define-key 'visual evil-snipe-local-mode-map "z" 'evil-snipe-s)
+  (evil-define-key 'visual evil-snipe-local-mode-map "Z" 'evil-snipe-S))
+#+end_src
+
 
 ** Doom configuration
 *** Modules
@@ -322,8 +338,9 @@ json                         ; At least it ain't XML
 ;;kotlin                     ; a better, slicker Java(Script)
 (latex                       ; writing papers in Emacs has never been so fun
  +latexmk                    ; what else would you use?
- +cdlatex                    ; quick maths symbols
- +fold)                      ; fold the clutter away nicities
+ +cdlatex
+ +lsp)                    ; quick maths symbols
+ ;; +fold)                      ; fold the clutter away nicities
 ;;lean                       ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
 ;;ledger                     ; an accounting system in Emacs
@@ -340,7 +357,7 @@ markdown                     ; writing docs for people to ignore
  +jupyter                    ; ipython/jupyter support for babel
  +pandoc                     ; export-with-pandoc support
  +gnuplot                    ; who doesn't like pretty pictures
- ;;+pomodoro                 ; be fruitful with the tomato technique
+ +pomodoro                 ; be fruitful with the tomato technique
  +present                    ; using org-mode for presentations
  +roam)                      ; wander around notes
 ;;perl                       ; write code no one else can comprehend
@@ -350,7 +367,7 @@ markdown                     ; writing docs for people to ignore
 (python
  +lsp
  +pyright
- +poetry
+ ;; +poetry
  +cython
  +pyenv); beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
@@ -370,8 +387,7 @@ web                          ; the tubes
 yaml                         ; JSON, but readable
 #+end_src
 
-**** Everything in Emacs
-It's just too convenient being able to have everything in Emacs.
+**** Everything in EmacsIt's just too convenient being able to have everything in Emacs.
 I couldn't resist the Email and Feed modules.
 
 #+name: doom-email
@@ -398,8 +414,8 @@ fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer Fira.
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :size 12)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 22)
+(setq doom-font (font-spec :family "Fira Code" :size 12)
+      doom-big-font (font-spec :family "Fira Code" :size 22)
       doom-unicode-font (font-spec :family "JuliaMono" :size 12)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 12)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 12))
@@ -488,6 +504,11 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
 Since I navigate vertically using Avy or Swiper I rarely look at line numbers and find them to clutter the screen for the most part.
 #+begin_src emacs-lisp
 (setq display-line-numbers-type nil)
+#+end_src
+
+I also like to move between windows with Avy goto-char, so lets enable searching in all windows
+#+begin_src emacs-lisp :tangle yes
+(setq avy-all-windows t)
 #+end_src
 
 I'd like some slightly nicer default buffer names
@@ -851,7 +872,7 @@ The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 #+begin_src emacs-lisp
 (package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el"))
-  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c" :disable t)
+  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
 #+end_src
 To make VLF available without delaying startup, we'll just load it in quiet moments.
 #+begin_src emacs-lisp :tangle yes
@@ -864,7 +885,6 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 (package! spell-fu)
 
 #+end_src
-
 
 ** Language packages
 #+begin_src emacs-lisp
@@ -1266,11 +1286,11 @@ icon. Then we'll redefine two functions used to generate the modeline.
 ** Emacs Everywhere
 In the case we are running as a damon, we should load the emacs-everywhere functionality
 #+begin_src emacs-lisp
-;; (when (daemonp)
-;;   (require 'spell-fu)
-;;   (setq emacs-everywhere-major-mode-function #'org-mode
-;;         emacs-everywhere-frame-name-format "Edit ∷ %s — %s")
-;;   (require 'emacs-everywhere))
+(when (daemonp)
+  (require 'spell-fu)
+  (setq emacs-everywhere-major-mode-function #'org-mode
+        emacs-everywhere-frame-name-format "Edit ∷ %s — %s")
+  (require 'emacs-everywhere))
 #+end_src
 
 ** Ispell
@@ -1303,7 +1323,7 @@ cd aspell6-en-custom
 #+end_src
 *** Configuration
 #+begin_src emacs-lisp
-(setq ispell-dictionary "en-custom")
+;; (setq ispell-dictionary "en-custom")
 #+end_src
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 ~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
@@ -1313,7 +1333,7 @@ the above.
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+;; (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+end_src
 
 ** Ivy
@@ -1400,6 +1420,20 @@ let's change that, and do a few other similar tweaks while we're at it.
 Snippets within snippets...yes please!
 #+begin_src emacs-lisp
 (setq yas-triggers-in-field t)
+#+end_src
+
+Having yas bound to tab is a bit annoying when using lsp-compay.
+For more control it is probably better to bound it to an explicit command.
+
+#+begin_src emacs-lisp :tangle yes
+(after! yasnippet
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (define-key yas-minor-mode-map (kbd "C-,") yas-maybe-expand))
+#+end_src
+
+#+begin_src emacs-lisp
+
 #+end_src
 
 ** Themes
@@ -2478,6 +2512,7 @@ need to have a template assigned.
 (set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 #+end_src
+* Language Configuration
 ** Plaintext
 It's nice to see ANSI colour codes displayed
 #+begin_src emacs-lisp
@@ -2502,6 +2537,18 @@ Load this mess after we initialize org-mode, as to speed up the start up
 )
 #+end_src
 
+#+begin_src emacs-lisp
+(setq org-directory "~/org"                      ; let's put files here
+      org-use-property-inheritance t              ; it's convenient to have properties inherited
+      org-log-done 'time                          ; having the time a item is done sounds convenient
+      org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
+      org-export-in-background t                  ; run export processes in external emacs process
+      org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
+      org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+#+end_src
+
+#+end_src
+
 Save the link as a comment in tangled files.
 Makes it easier to know where something went wrong.
 #+begin_src emacs-lisp
@@ -2514,6 +2561,11 @@ Makes it easier to know where something went wrong.
         (:hlines . "no")
         (:tangle . "no")
         (:comments . "link")))
+#+end_src
+
+#+begin_src emacs-lisp
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2534,23 +2586,415 @@ Makes it easier to know where something went wrong.
       (setq org-latex-classes nil)))
 #+end_src
 
-** Python
-#+begin_src emacs-lisp :tangle yes
-;; (use-package! lsp-pyright
-;;   :hook (python-mode . (lambda ()
-;;                           (require 'lsp-pyright)
-;;                           (lsp))))  ; or lsp-deferred
-#+end_src
-
+***** LSP support in ~src~ blocks
+Now, by default, LSPs don't really function at all in ~src~ blocks.
 #+begin_src emacs-lisp
-;; (after! lsp-mode
-;;   (lsp-register-client
-;;    (make-lsp-client :new-connection (lsp-tramp-connection "pyright")
-;;                     :major-modes '(python-mode)
-;;                     :remote? t
-;;                     :server-id 'pyright-remote-server)))
+(cl-defmacro lsp-org-babel-enable (lang)
+  "Support LANG in org source code block."
+  (setq centaur-lsp 'lsp-mode)
+  (cl-check-type lang stringp)
+  (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
+         (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
+    `(progn
+       (defun ,intern-pre (info)
+         (let ((file-name (->> info caddr (alist-get :file))))
+           (unless file-name
+             (setq file-name (make-temp-file "babel-lsp-")))
+           (setq buffer-file-name file-name)
+           (lsp-deferred)))
+       (put ',intern-pre 'function-documentation
+            (format "Enable lsp-mode in the buffer of org source block (%s)."
+                    (upcase ,lang)))
+       (if (fboundp ',edit-pre)
+           (advice-add ',edit-pre :after ',intern-pre)
+         (progn
+           (defun ,edit-pre (info)
+             (,intern-pre info))
+           (put ',edit-pre 'function-documentation
+                (format "Prepare local buffer environment for org source block (%s)."
+                        (upcase ,lang))))))))
+(defvar org-babel-lang-list
+  '("go" "python" "ipython" "bash" "sh"))
+(dolist (lang org-babel-lang-list)
+  (eval `(lsp-org-babel-enable ,lang)))
 #+end_src
 
+**** Super agenda
+#+begin_src emacs-lisp
+(use-package! org-super-agenda
+  :commands (org-super-agenda-mode))
+(after! org-agenda
+  (org-super-agenda-mode))
+
+(setq org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-block-separator nil
+      org-agenda-tags-column 100 ;; from testing this seems to be a good value
+      org-agenda-compact-blocks t)
+
+(setq org-agenda-custom-commands
+      '(("o" "Overview"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                          :time-grid t
+                          :date today
+                          :todo "TODAY"
+                          :scheduled today
+                          :order 1)))))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Next to do"
+                           :todo "NEXT"
+                           :order 1)
+                          (:name "Important"
+                           :tag "Important"
+                           :priority "A"
+                           :order 6)
+                          (:name "Due Today"
+                           :deadline today
+                           :order 2)
+                          (:name "Due Soon"
+                           :deadline future
+                           :order 8)
+                          (:name "Overdue"
+                           :deadline past
+                           :face error
+                           :order 7)
+                          (:name "Assignments"
+                           :tag "Assignment"
+                           :order 10)
+                          (:name "Issues"
+                           :tag "Issue"
+                           :order 12)
+                          (:name "Emacs"
+                           :tag "Emacs"
+                           :order 13)
+                          (:name "Projects"
+                           :tag "Project"
+                           :order 14)
+                          (:name "Research"
+                           :tag "Research"
+                           :order 15)
+                          (:name "To read"
+                           :tag "Read"
+                           :order 30)
+                          (:name "Waiting"
+                           :todo "WAITING"
+                           :order 20)
+                          (:name "University"
+                           :tag "uni"
+                           :order 32)
+                          (:name "Trivial"
+                           :priority<= "E"
+                           :tag ("Trivial" "Unimportant")
+                           :todo ("SOMEDAY" )
+                           :order 90)
+                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
+#+end_src
+
+**** Capture
+Let's setup some org-capture templates, and make them visually nice to access.
+
+#+begin_src emacs-lisp :noweb no-export
+(use-package! doct
+  :commands (doct))
+
+(after! org-capture
+  <<prettify-capture>>
+
+  (defun +doct-icon-declaration-to-icon (declaration)
+    "Convert :icon declaration to icon"
+    (let ((name (pop declaration))
+          (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
+          (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
+          (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
+      (apply set `(,name :face ,face :v-adjust ,v-adjust))))
+
+  (defun +doct-iconify-capture-templates (groups)
+    "Add declaration's :icon to each template group in GROUPS."
+    (let ((templates (doct-flatten-lists-in groups)))
+      (setq doct-templates (mapcar (lambda (template)
+                                     (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
+                                                 (spec (plist-get (plist-get props :doct) :icon)))
+                                       (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
+                                                                      "\t"
+                                                                      (nth 1 template))))
+                                     template)
+                                   templates))))
+
+  (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
+
+  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+
+  (defun set-org-capture-templates ()
+    (setq org-capture-templates
+          (doct `(("Personal todo" :keys "t"
+                   :icon ("checklist" :set "octicon" :color "green")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Inbox"
+                   :type entry
+                   :template ("* TODO %?"
+                              "%i %a")
+                   )
+                  ("Personal note" :keys "n"
+                   :icon ("sticky-note-o" :set "faicon" :color "green")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Inbox"
+                   :type entry
+                   :template ("* %?"
+                              "%i %a"))
+                  ("Email" :keys "e"
+                   :icon ("envelope" :set "faicon" :color "blue")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Inbox"
+                   :type entry
+                   :template ("* TODO %^{type|reply to|contact} %\\3 %? :email:"
+                              "Send an email %^{urgancy|soon|ASAP|anon|at some point|eventually} to %^{recipiant}"
+                              "about %^{topic}"
+                              "%U %i %a"))
+                  ("Interesting" :keys "i"
+                   :icon ("eye" :set "faicon" :color "lcyan")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Interesting"
+                   :type entry
+                   :template ("* [ ] %{desc}%? :%{i-type}:"
+                              "%i %a")
+                   :children (("Webpage" :keys "w"
+                               :icon ("globe" :set "faicon" :color "green")
+                               :desc "%(org-cliplink-capture) "
+                               :i-type "read:web"
+                               )
+                              ("Article" :keys "a"
+                               :icon ("file-text" :set "octicon" :color "yellow")
+                               :desc ""
+                               :i-type "read:reaserch"
+                               )
+                              ("\tRecipie" :keys "r"
+                               :icon ("spoon" :set "faicon" :color "dorange")
+                               :file +org-capture-recipies
+                               :headline "Unsorted"
+                               :template "%(org-chef-get-recipe-from-url)"
+                               )
+                              ("Information" :keys "i"
+                               :icon ("info-circle" :set "faicon" :color "blue")
+                               :desc ""
+                               :i-type "read:info"
+                               )
+                              ("Idea" :keys "I"
+                               :icon ("bubble_chart" :set "material" :color "silver")
+                               :desc ""
+                               :i-type "idea"
+                               )))
+                  ("Tasks" :keys "k"
+                   :icon ("inbox" :set "octicon" :color "yellow")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Tasks"
+                   :type entry
+                   :template ("* TODO %? %^G%{extra}"
+                              "%i %a")
+                   :children (("General Task" :keys "k"
+                               :icon ("inbox" :set "octicon" :color "yellow")
+                               :extra ""
+                               )
+                              ("Task with deadline" :keys "d"
+                               :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
+                               :extra "\nDEADLINE: %^{Deadline:}t"
+                               )
+                              ("Scheduled Task" :keys "s"
+                               :icon ("calendar" :set "octicon" :color "orange")
+                               :extra "\nSCHEDULED: %^{Start time:}t"
+                               )
+                              ))
+                  ("Project" :keys "p"
+                   :icon ("repo" :set "octicon" :color "silver")
+                   :prepend t
+                   :type entry
+                   :headline "Inbox"
+                   :template ("* %{time-or-todo} %?"
+                              "%i"
+                              "%a")
+                   :file ""
+                   :custom (:time-or-todo "")
+                   :children (("Project-local todo" :keys "t"
+                               :icon ("checklist" :set "octicon" :color "green")
+                               :time-or-todo "TODO"
+                               :file +org-capture-project-todo-file)
+                              ("Project-local note" :keys "n"
+                               :icon ("sticky-note" :set "faicon" :color "yellow")
+                               :time-or-todo "%U"
+                               :file +org-capture-project-notes-file)
+                              ("Project-local changelog" :keys "c"
+                               :icon ("list" :set "faicon" :color "blue")
+                               :time-or-todo "%U"
+                               :heading "Unreleased"
+                               :file +org-capture-project-changelog-file))
+                   )
+                  ("\tCentralised project templates"
+                   :keys "o"
+                   :type entry
+                   :prepend t
+                   :template ("* %{time-or-todo} %?"
+                              "%i"
+                              "%a")
+                   :children (("Project todo"
+                               :keys "t"
+                               :prepend nil
+                               :time-or-todo "TODO"
+                               :heading "Tasks"
+                               :file +org-capture-central-project-todo-file)
+                              ("Project note"
+                               :keys "n"
+                               :time-or-todo "%U"
+                               :heading "Notes"
+                               :file +org-capture-central-project-notes-file)
+                              ("Project changelog"
+                               :keys "c"
+                               :time-or-todo "%U"
+                               :heading "Unreleased"
+                               :file +org-capture-central-project-changelog-file))
+                   )))))
+
+  (set-org-capture-templates)
+  (unless (display-graphic-p)
+    (add-hook 'server-after-make-frame-hook
+              (defun org-capture-reinitialise-hook ()
+                (when (display-graphic-p)
+                  (set-org-capture-templates)
+                  (remove-hook 'server-after-make-frame-hook
+                               #'org-capture-reinitialise-hook))))))
+#+end_src
+It would also be nice to improve how the capture dialogue looks
+#+name: prettify-capture
+#+begin_src emacs-lisp :tangle no
+(defun org-capture-select-template-prettier (&optional keys)
+  "Select a capture template, in a prettier way than default
+Lisp programs can force the template by setting KEYS to a string."
+  (let ((org-capture-templates
+         (or (org-contextualize-keys
+              (org-capture-upgrade-templates org-capture-templates)
+              org-capture-templates-contexts)
+             '(("t" "Task" entry (file+headline "" "Tasks")
+                "* TODO %?\n  %u\n  %a")))))
+    (if keys
+        (or (assoc keys org-capture-templates)
+            (error "No capture template referred to by \"%s\" keys" keys))
+      (org-mks org-capture-templates
+               "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
+               "Template key: "
+               `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
+(advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
+
+(defun org-mks-pretty (table title &optional prompt specials)
+  "Select a member of an alist with multiple keys. Prettified.
+
+TABLE is the alist which should contain entries where the car is a string.
+There should be two types of entries.
+
+1. prefix descriptions like (\"a\" \"Description\")
+   This indicates that `a' is a prefix key for multi-letter selection, and
+   that there are entries following with keys like \"ab\", \"ax\"…
+
+2. Select-able members must have more than two elements, with the first
+   being the string of keys that lead to selecting it, and the second a
+   short description string of the item.
+
+The command will then make a temporary buffer listing all entries
+that can be selected with a single key, and all the single key
+prefixes.  When you press the key for a single-letter entry, it is selected.
+When you press a prefix key, the commands (and maybe further prefixes)
+under this key will be shown and offered for selection.
+
+TITLE will be placed over the selection in the temporary buffer,
+PROMPT will be used when prompting for a key.  SPECIALS is an
+alist with (\"key\" \"description\") entries.  When one of these
+is selected, only the bare key is returned."
+  (save-window-excursion
+    (let ((inhibit-quit t)
+          (buffer (org-switch-to-buffer-other-window "*Org Select*"))
+          (prompt (or prompt "Select: "))
+          case-fold-search
+          current)
+      (unwind-protect
+          (catch 'exit
+            (while t
+              (setq-local evil-normal-state-cursor (list nil))
+              (erase-buffer)
+              (insert title "\n\n")
+              (let ((des-keys nil)
+                    (allowed-keys '("\C-g"))
+                    (tab-alternatives '("\s" "\t" "\r"))
+                    (cursor-type nil))
+                ;; Populate allowed keys and descriptions keys
+                ;; available with CURRENT selector.
+                (let ((re (format "\\`%s\\(.\\)\\'"
+                                  (if current (regexp-quote current) "")))
+                      (prefix (if current (concat current " ") "")))
+                  (dolist (entry table)
+                    (pcase entry
+                      ;; Description.
+                      (`(,(and key (pred (string-match re))) ,desc)
+                       (let ((k (match-string 1 key)))
+                         (push k des-keys)
+                         ;; Keys ending in tab, space or RET are equivalent.
+                         (if (member k tab-alternatives)
+                             (push "\t" allowed-keys)
+                           (push k allowed-keys))
+                         (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) (propertize "›" 'face 'font-lock-comment-face) "  " desc "…" "\n")))
+                      ;; Usable entry.
+                      (`(,(and key (pred (string-match re))) ,desc . ,_)
+                       (let ((k (match-string 1 key)))
+                         (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) "   " desc "\n")
+                         (push k allowed-keys)))
+                      (_ nil))))
+                ;; Insert special entries, if any.
+                (when specials
+                  (insert "─────────────────────────\n")
+                  (pcase-dolist (`(,key ,description) specials)
+                    (insert (format "%s   %s\n" (propertize key 'face '(bold all-the-icons-red)) description))
+                    (push key allowed-keys)))
+                ;; Display UI and let user select an entry or
+                ;; a sub-level prefix.
+                (goto-char (point-min))
+                (unless (pos-visible-in-window-p (point-max))
+                  (org-fit-window-to-buffer))
+                (let ((pressed (org--mks-read-key allowed-keys
+                                                  prompt
+                                                  (not (pos-visible-in-window-p (1- (point-max)))))))
+                  (setq current (concat current pressed))
+                  (cond
+                   ((equal pressed "\C-g") (user-error "Abort"))
+                   ;; Selection is a prefix: open a new menu.
+                   ((member pressed des-keys))
+                   ;; Selection matches an association: return it.
+                   ((let ((entry (assoc current table)))
+                      (and entry (throw 'exit entry))))
+                   ;; Selection matches a special entry: return the
+                   ;; selection prefix.
+                   ((assoc current specials) (throw 'exit current))
+                   (t (error "No entry available")))))))
+        (when buffer (kill-buffer buffer))))))
+(advice-add 'org-mks :override #'org-mks-pretty)
+#+end_src
+The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
+no modeline.
+#+begin_src emacs-lisp
+(setf (alist-get 'height +org-capture-frame-parameters) 15)
+;; (alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
+(setq +org-capture-fn
+      (lambda ()
+        (interactive)
+        (set-window-parameter nil 'mode-line-format 'none)
+        (org-capture)))
+#+end_src
+
+** Python
 Our nice docstring formatting tools
 #+begin_src emacs-lisp
 (use-package! python-docstring-mode :hook python-mode)
@@ -3102,4 +3546,8 @@ Who doesn't want to browse the web in org-mode.
 
 #+begin_src emacs-lisp
 (use-package! org-web-tools)
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(which-key-mode)
 #+end_src
