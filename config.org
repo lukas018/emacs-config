@@ -891,6 +891,19 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 
 #+end_src
 
+**** Grammar
+#+begin_src emacs-lisp
+(package! lsp-grammarly :recipe (:host github :repo "emacs-grammarly/lsp-grammarly"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! lsp-grammarly
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-grammarly)
+                       (lsp))))  ; or lsp-deferred
+#+end_src
+
+
 ** Language packages
 #+begin_src emacs-lisp
 (unpin! lsp-mode)
