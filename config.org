@@ -3552,3 +3552,16 @@ Who doesn't want to browse the web in org-mode.
 #+begin_src emacs-lisp :tangle yes
 (which-key-mode)
 #+end_src
+
+** Smaller quality of life changes
+
+When working with more complext Vue components it is nice to split
+them into multiple files. Adding these extensions makes it easy to quickly
+switch between different files.
+
+#+begin_src emacs-lisp
+(push '("vue" "css" "ts" "js") projectile-other-file-alist)
+(push '("css" "ts" "js" "vue") projectile-other-file-alist)
+(push '("ts" "vue" "css") projectile-other-file-alist)
+(push '("js" "vue" "css") projectile-other-file-alist)
+#+end_src
