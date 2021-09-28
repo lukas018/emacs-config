@@ -192,11 +192,12 @@ I reckon enabling half the modules Doom provides should do it.
 (company                     ; the ultimate code completion backend
  ;; +childframe
  )                ; ... when your children are better than you
-helm                       ; the *other* search engine for love and life
+;; helm                       ; the *other* search engine for love and life
 ;; ido                        ; the other *other* search engine...
-(ivy                         ; a search engine for love and life
- +icons                      ; ... icons are nice
- +prescient)                 ; ... I know what I want(ed)
+;; (ivy                         ; a search engine for love and life
+;;  +icons                      ; ... icons are nice
+;;  +prescient)                 ; ... I know what I want(ed)
+(vertico +icons)
 #+end_src
 
 #+name: doom-ui
@@ -296,6 +297,7 @@ rgb                          ; creating color strings
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 upload                       ; map local to remote projects via ssh/ftp
+biblio                       ; Support for references
 #+end_src
 
 #+name: doom-os
@@ -359,7 +361,7 @@ markdown                     ; writing docs for people to ignore
  +gnuplot                    ; who doesn't like pretty pictures
  +pomodoro                 ; be fruitful with the tomato technique
  +present                    ; using org-mode for presentations
- +roam
+ +roam2
  )                      ; wander around notes
 ;;perl                       ; write code no one else can comprehend
 ;;php                        ; perl's insecure younger brother
@@ -897,10 +899,10 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
-(use-package! lsp-grammarly
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-grammarly)
-                       (lsp))))  ; or lsp-deferred
+;; (use-package! lsp-grammarly
+;;   :hook (text-mode . (lambda ()
+;;                        (require 'lsp-grammarly)
+;;                        (lsp))))  ; or lsp-deferred
 #+end_src
 
 
@@ -1009,9 +1011,10 @@ features that GitHub has.
 Now and then citations need to happen
 #+begin_src emacs-lisp
 (package! org-ref :pin "3ca9beb744621f007d932deb8a4197467012c23a")
-(package! helm-bibtex)
-;; Pin this for now since org-roam v2 is out
-(package! org-roam-bibtex :pin "c9865196efe7cfdfcced0d47ea3e5b39bdddd162")
+(package! org-roam-bibtex
+  :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+(unpin! org-roam)
+(unpin! bibtex-completion helm-bibtex ivy-bibtex)
 #+end_src
 
 Came across this and ... it's cool
@@ -1036,27 +1039,44 @@ to make that right again, and this package makes that even easier to do.
   :after org)
 #+end_src
 
+
+#+begin_src emacs-lisp
+(after! org-roam
+  (defun org-roam-node-insert-immediate (arg &rest args)
+    (interactive "P")
+    (let ((args (cons arg args))
+          (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                    '(:immediate-finish t)))))
+      (apply #'org-roam-node-insert args)))
+
+  (map! :leader
+      :desc "Insert immediately" "n r I" #'org-roam-node-insert-immediate)
+
+  )
+#+end_src
+
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
-#+begin_src emacs-lisp
-;; (package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
+#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
+(package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
-#+begin_src emacs-lisp :tangle yes
-;; (use-package org-roam-server
-;;   :after (org-roam server)
-;;   :config
-;;   (setq org-roam-server-host "127.0.0.1"
-;;         org-roam-server-port 8078
-;;         org-roam-server-export-inline-images t
-;;         org-roam-server-authenticate nil
-;;         org-roam-server-network-label-truncate t
-;;         org-roam-server-network-label-truncate-length 60
-;;         org-roam-server-network-label-wrap-length 20)
-;;   (defun org-roam-server-open ()
-;;     "Ensure the server is active, then open the roam graph."
-;;     (interactive)
-;;     (org-roam-server-mode 1)
-;;     (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :commands org-roam-ui-open
+  :hook (org-roam . org-roam-ui-mode)
+  :config
+  (require 'org-roam) ; in case autoloaded
+  (defun org-roam-ui-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (unless org-roam-ui-mode (org-roam-ui-mode 1))
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 #+end_src
 
 *** Systemd
@@ -3123,7 +3143,8 @@ integrates well with org-roam via org-roam-bibtex.
   :config
   (setq
    ;; bibtex-completion-bibliography '("~/org/ref/references.bib")
-   bibtex-completion-bibliography (nconc '("~/org/ref/references.bib") (file-expand-wildcards "~/Documents/data-rapport/bibliographies/*.bib"))
+   bibtex-completion-bibliography (nconc '("~/org/ref/references.bib")
+                                         (file-expand-wildcards "~/Documents/data-rapport/bibliographies/*.bib"))
    ))
 #+end_src
 
@@ -3147,14 +3168,17 @@ Combined with our pdf management this gives us a wholistic way of managing
 citations, notes, and pdf-management.
 
 #+begin_src emacs-lisp
-(use-package! org-roam-bibtex
-  :after org-roam
-  :config
-  (setq orb-templates
-    '(("r" "ref" plain (function org-roam-capture--get-point) ""
-      :file-name "${citekey}"
-      :head "#+title: ${title}\n#+roam_key: ${ref}\n"
-      :unnarrowed t))))
+;; (use-package! org-roam-bibtex
+;;   :after org-roam
+;;   :config
+;;   (setq orb-preformat-keywords '("citekey" "author" "date"))
+;;   (setq org-roam-capture-templates
+;;         '(("r" "bibliography reference" plain
+;;            "%?
+;; %^{author} published %^{entry-type} in %^{date}: fullcite:%\\1."
+;;            :if-new
+;;            (file+head "references/${citekey}.org" "#+title: ${title}\n")
+;;            :unnarrowed t))))
 #+end_src
 
 *** Biblio
@@ -3553,15 +3577,16 @@ Who doesn't want to browse the web in org-mode.
 (which-key-mode)
 #+end_src
 
-** Smaller quality of life changes
+** COMMENT Smaller quality of life changes
 
 When working with more complext Vue components it is nice to split
 them into multiple files. Adding these extensions makes it easy to quickly
 switch between different files.
 
 #+begin_src emacs-lisp
-(push '("vue" "css" "ts" "js") projectile-other-file-alist)
-(push '("css" "ts" "js" "vue") projectile-other-file-alist)
-(push '("ts" "vue" "css") projectile-other-file-alist)
-(push '("js" "vue" "css") projectile-other-file-alist)
+(after! projectile
+  (push '("vue" "css" "ts" "js") projectile-other-file-alist)
+  (push '("css" "ts" "js" "vue") projectile-other-file-alist)
+  (push '("ts" "vue" "css") projectile-other-file-alist)
+  (push '("js" "vue" "css") projectile-other-file-alist))
 #+end_src
