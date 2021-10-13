@@ -898,13 +898,41 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 (package! lsp-grammarly :recipe (:host github :repo "emacs-grammarly/lsp-grammarly"))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
-;; (use-package! lsp-grammarly
-;;   :hook (text-mode . (lambda ()
-;;                        (require 'lsp-grammarly)
-;;                        (lsp))))  ; or lsp-deferred
+**** Improved Syntax Highlighting and Text Objects
+#+begin_src emacs-lisp
+(package! tree-sitter)
+(package! tree-sitter-langs)
+(package! evil-textobj-tree-sitter)
 #+end_src
 
+Enable tree-sitter for nicer looking syntax highlighting
+#+begin_src emacs-lisp :tangle yes
+(use-package! tree-sitter
+  :config
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+#+end_src
+
+While we are at it, let's add some of the tree-sitter word objects for evil.
+If a language has tree-sitter support, we can now more easily select certain text objects
+#+begin_src emacs-lisp
+(use-package! evil-textobj-tree-sitter
+  :config
+  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+  (define-key evil-outer-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "class.outer"))
+  (define-key evil-inner-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "class.inner"))
+  (define-key evil-outer-text-objects-map "p" (evil-textobj-tree-sitter-get-textobj "parameter.outer"))
+  (define-key evil-inner-text-objects-map "p" (evil-textobj-tree-sitter-get-textobj "parameter.inner"))
+  (define-key evil-outer-text-objects-map "l" (evil-textobj-tree-sitter-get-textobj "loop.outer"))
+  (define-key evil-inner-text-objects-map "l" (evil-textobj-tree-sitter-get-textobj "loop.inner"))
+  (define-key evil-outer-text-objects-map "b" (evil-textobj-tree-sitter-get-textobj "block.outer"))
+  (define-key evil-inner-text-objects-map "b" (evil-textobj-tree-sitter-get-textobj "block.inner"))
+  (define-key evil-outer-text-objects-map "n" (evil-textobj-tree-sitter-get-textobj "conditional.outer"))
+  (define-key evil-inner-text-objects-map "n" (evil-textobj-tree-sitter-get-textobj "conditional.inner"))
+  (define-key evil-outer-text-objects-map "s" (evil-textobj-tree-sitter-get-textobj "statement.outer")))
+#+end_src
 
 ** Language packages
 #+begin_src emacs-lisp
