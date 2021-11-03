@@ -2,7 +2,7 @@
 #+property: header-args sh :tangle font.sh
 
 * Installing YADM locally
-#+begin_src bash :tangle yes
+#+begin_src sh :tangle yes
 git clone https://github.com/TheLocehiliosan/yadm.git ~/.yadm-project
 ln -s ~/.yadm-project/yadm ~/.local/bin/yadm
 yadm clone
@@ -17,7 +17,7 @@ infiloop=$!
 #+end_src
 
 Prepare the necessary tools
-#+begin_src bash :tangle yes
+#+begin_src sh :tangle yes
 sudo apt update && sudo apt install unzip wget git curl apt-transport-https libtool libtool-bin htop -y
 #+end_src
 
