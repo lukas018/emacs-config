@@ -18,7 +18,13 @@ infiloop=$!
 
 Prepare the necessary tools
 #+begin_src bash :tangle yes
-sudo apt update && sudo apt install unzip wget git curl apt-transport-https
+sudo apt update && sudo apt install unzip wget git curl apt-transport-https libtool libtool-bin htop -y
+#+end_src
+
+** Alegreya
+#+begin_src sh :tangle yes
+sudo apt install fonts-alegreya-sans -y
+wget https://www.1001fonts.com/download/alegreya.zip -P /tmp && cd /tmp && unzip alegreya.zip -d alegreya && mv alegreya/*.ttf ~/.local/share/fonts
 #+end_src
 
 ** Fira Code
@@ -31,7 +37,6 @@ wget https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip
 cd /tmp && wget https://download.jetbrains.com/fonts/JetBrainsMono-2.001.zip \
     && unzip JetBrainsMono-2.001.zip && mv ttf/JetBrainsMono-*.ttf ~/.local/share/fonts/
 #+end_src
-
 
 ** Overpass
 #+begin_src sh :tangle yes
