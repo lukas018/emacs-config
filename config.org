@@ -1011,7 +1011,7 @@ I think the latest AucTeX may be a bit dodgy, so
 *** Org Mode
 Use ~HEAD~ for development.
 #+begin_src emacs-lisp
-(unpin! org-mode)
+;; (unpin! org-mode)
 #+end_src
 
 **** Improve agenda/capture
