@@ -55,10 +55,8 @@ git clone https://github.com/IBM/plex.git /tmp/ibm-plex && cd /tmp/ibm-plex && m
 
 ** Merriweather
 #+begin_src sh :tangle yes
-git clone https://github.com/SorkinType/Merriweather.git /tmp/merriweather && cd /tmp/merriweather && fonts/ttfs/*.ttf
+git clone https://github.com/SorkinType/Merriweather.git /tmp/merriweather && cd /tmp/merriweather && mv fonts/ttfs/*.ttf  ~/.local/share/fonts
 #+end_src
-
-#+RESULTS:
 
 ** SIJI
 #+begin_src sh :tangle yes
