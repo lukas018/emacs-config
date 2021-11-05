@@ -2,7 +2,7 @@
 #+property: header-args sh :tangle font.sh
 
 * Installing YADM locally
-#+begin_src bash :tangle yes
+#+begin_src sh :tangle yes
 git clone https://github.com/TheLocehiliosan/yadm.git ~/.yadm-project
 ln -s ~/.yadm-project/yadm ~/.local/bin/yadm
 yadm clone
@@ -16,13 +16,19 @@ infiloop=$!
 #+end_src
 
 Prepare the necessary tools
-#+begin_src bash :tangle yes
-sudo apt update && sudo apt install unzip wget git curl apt-transport-https
+#+begin_src sh :tangle yes
+sudo apt update && sudo apt install unzip wget git curl apt-transport-https libtool libtool-bin htop -y
+#+end_src
+
+** Alegreya
+#+begin_src sh :tangle yes
+sudo apt install fonts-alegreya-sans -y
+wget https://www.1001fonts.com/download/alegreya.zip -P /tmp && cd /tmp && unzip alegreya.zip -d alegreya && mv alegreya/*.ttf ~/.local/share/fonts
 #+end_src
 
 ** Fira Code
 #+begin_src sh :tangle yes
-wget https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip /tmp && cd /tmp && unzip Fira_Code_v5.2.zip && mv ttf/*.ttf ~/.local/share/fonts
+wget https://github.com/tonsky/FiraCode/releases/download/5.2/Fira_Code_v5.2.zip -P /tmp && cd /tmp && unzip Fira_Code_v5.2.zip && mv ttf/*.ttf ~/.local/share/fonts
 #+end_src
 
 ** Jetbrains Mono
@@ -33,7 +39,7 @@ cd /tmp && wget https://download.jetbrains.com/fonts/JetBrainsMono-2.001.zip \
 
 ** Overpass
 #+begin_src sh :tangle yes
-git clone https://github.com/RedHatOfficial/Overpass.git /tmp/Overpass && cd /tmp/Overpass && mv desktop-fonts/*/*.otf ~/.local/share/fonts
+git clone https://github.com/RedHatOfficial/Overpass.git /tmp/Overpass && cd /tmp/Overpass && mv fonts/*/*.otf ~/.local/share/fonts
 #+end_src
 
 ** Julia Mono
@@ -48,10 +54,8 @@ git clone https://github.com/IBM/plex.git /tmp/ibm-plex && cd /tmp/ibm-plex && m
 
 ** Merriweather
 #+begin_src sh :tangle yes
-git clone https://github.com/SorkinType/Merriweather.git /tmp/merriweather && cd /tmp/merriweather && fonts/ttfs/*.ttf
+git clone https://github.com/SorkinType/Merriweather.git /tmp/merriweather && cd /tmp/merriweather && mv fonts/ttfs/*.ttf  ~/.local/share/fonts
 #+end_src
-
-#+RESULTS:
 
 ** SIJI
 #+begin_src sh :tangle yes
@@ -110,6 +114,7 @@ sudo apt update && sudo apt install brave-browser
 #+begin_src sh :tangle yes
 sudo apt install bspwm qtile xmonad feh flameshot
 sudo snap install postman polybar-git --edge
+sh -c "$(curl -fsSL https://starship.rs/install.sh)"
 #+end_src
 
 * Emacs
