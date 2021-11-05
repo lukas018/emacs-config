@@ -10,8 +10,7 @@ yadm clone
 
 * Installing my fonts on Ubuntu
 
-#+begin_src sh :tangle yes
-while :; do sudo -v; sleep 59; done &
+#+begin_src sh :tangle yes while :; do sudo -v; sleep 59; done &
 # Remember to kill this at the end
 infiloop=$!
 #+end_src

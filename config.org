@@ -3516,12 +3516,15 @@ By default doom emacs launches EWW in a popup-buffer.
 This is a bit annoying if we want to use EWW as a real browser (wowser?).
 This can be fixed by adding an ignore rule in the list of popup-rules.
 
+We can add some for otherthings which we want to be more persistent.
+
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*\\([Hh]elp\\|Apropos\\)" :ignore t)
 (set-popup-rule! ".*eww\\*.*" :ignore t)
 (set-popup-rule! ".*eww\\*.*" :ignore t)
 (set-popup-rule! "^\\*arXiv.*" :ignore t )
 (set-popup-rule! "^*DBLP" :ignore t)
+(set-popup-rule! "^\\*\\([Hh]elp\\|Apropos\\)" :ignore t)
+(set-popup-rule! "^\\*Embark Collect\\*" :ignore t :select t)
 #+end_src
 
 ** EIN
