@@ -2852,3 +2852,11 @@ Adding keybinding for formatting buffers
       :desc "Format buffer"
       "b f" '+format/buffer)
 #+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! exec-path-from-shell)
+#+end_src
+
+#+begin_src emacs-lisp
+(exec-path-from-shell-initialize)
+#+end_src
