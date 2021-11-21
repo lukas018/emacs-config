@@ -1872,7 +1872,7 @@ Makes it easier to know where something went wrong.
 
 #+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
-(add-hook 'text-mode-hook (lambda () ('auto-fill-mode nil)))
+(add-hook 'text-mode-hook (lambda () (auto-fill-mode nil)))
 #+end_src
 
 #+begin_src emacs-lisp
