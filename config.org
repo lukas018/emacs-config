@@ -274,8 +274,8 @@ grammar                      ; tasing grammar mistake every you make
 #+name: doom-tools
 #+begin_src emacs-lisp
 ansible                      ; a crucible for infrastructure as code
-(debugger +lsp)                   ; FIXME stepping through code, to help you add bugs
-direnv                     ; be direct about your environment
+(debugger +lsp)              ; FIXME stepping through code, to help you add bugs
+direnv                       ; be direct about your environment
 docker                       ; port everything to containers
 ;;editorconfig               ; let someone else argue about tabs vs spaces
 ein                          ; tame Jupyter notebooks with emacs
@@ -285,7 +285,6 @@ ein                          ; tame Jupyter notebooks with emacs
  +dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
 lsp                          ; Language Server Protocol
-;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges
 make                         ; run make tasks from Emacs
@@ -297,11 +296,12 @@ rgb                          ; creating color strings
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 upload                       ; map local to remote projects via ssh/ftp
-;;biblio                       ; Support for references
+;;biblio                     ; Support for references
 #+end_src
 
 #+name: doom-os
 #+begin_src emacs-lisp
+(:if IS-MAC macos)           ; improve compatibility with macOS
 tty                          ; improve the terminal Emacs experience
 #+end_src
 
@@ -899,7 +899,9 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 #+end_src
 
 **** Tree-Sitter
-#+begin_src emacs-lisp
+Tree Sitter is a nice way to both improve syntax highlighting and adding new text objects to evil mode
+However, it can't be compiled to work on M1 Chips just yet, so we disable it for MACOS for now.
+#+begin_src emacs-lisp :tangle (if (not (eq system-type 'darwin)) "packages.el" "no")
 (package! tree-sitter)
 (package! tree-sitter-langs)
 (package! evil-textobj-tree-sitter :recipe (
@@ -909,7 +911,7 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 #+end_src
 
 Enable tree-sitter for nicer looking syntax highlighting
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle (if (not (eq system-type 'darwin)) "yes" "no")
 (use-package! tree-sitter
   :config
   (require 'tree-sitter-langs)
@@ -919,7 +921,7 @@ Enable tree-sitter for nicer looking syntax highlighting
 
 While we are at it, let's add some of the tree-sitter word objects for evil.
 If a language has tree-sitter support, we can now more easily select certain text objects
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle (if (not (eq system-type 'darwin)) "yes" "no")
 (use-package! evil-textobj-tree-sitter
   :config
   (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
@@ -1853,7 +1855,6 @@ Load this mess after we initialize org-mode, as to speed up the start up
       org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
 #+end_src
 
-#+end_src
 
 Save the link as a comment in tangled files.
 Makes it easier to know where something went wrong.
@@ -1871,7 +1872,7 @@ Makes it easier to know where something went wrong.
 
 #+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
-(add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'text-mode-hook (lambda () ('auto-fill-mode nil)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2905,4 +2906,14 @@ A scratch pad using emacsclient
           (frame-parameters . ((undecorated . t)
                                (skip-taskbar . t)
                                (sticky . t)))))))
+
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! exec-path-from-shell)
+#+end_src
+
+#+begin_src emacs-lisp
+(exec-path-from-shell-initialize)
 #+end_src
