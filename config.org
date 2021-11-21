@@ -330,7 +330,7 @@ ess                          ; emacs speaks statistics
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
 ;;(go +lsp)                  ; the hipster dialect
-;; (haskell +lsp)            ; a language that's lazier than I am
+(haskell +lsp)            ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 ;;idris                      ;
 json                         ; At least it ain't XML
@@ -1241,6 +1241,12 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
 Let's start with allowing us to rotate between active vterm sessions
 
 #+begin_src emacs-lisp
+
+(defun luklun/vterm-ibuffer ()
+    (interactive)
+    (ibuffer)
+    (ibuffer-filter-by-mode 'vterm-mode))
+
 (use-package! vterm-toggle
   :after vterm
   :config
@@ -1251,6 +1257,7 @@ Let's start with allowing us to rotate between active vterm sessions
          :desc "hide vterm" "h" #'vterm-toggle-hide
          :desc "next vterm" "n" #'vterm-toggle-backward
          :desc "prev vterm" "p" #'vterm-toggle-forward
+         :desc "prev vterm" "b" #'luklun/vterm-ibuffer
          :desc "copy mode" "c" #'vterm-copy-mode)))
 #+end_src
 
@@ -1301,6 +1308,26 @@ Increase the default scrollback in vterm
 (setq vterm-max-scrollback 100000)
 #+end_src
 
+# Remove vterm from evil escape mode ban list
+#+begin_src emacs-lisp
+(setq evil-escape-excluded-major-modes (delete 'vterm-mode evil-escape-excluded-major-modes))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun vterm-evil-append-line ()
+    "Provide similar behavior as `evil-append-line'."
+    (interactive)
+    (let ((inhibit-read-only t))
+      (vterm-end-of-line)
+      (vterm-evil-append)))
+
+(defun my-vterm-hook()
+  (evil-local-mode 1)
+  (evil-define-key 'normal 'local "A" 'vterm-evil-append-line))
+
+(add-hook 'vterm-mode-hook 'my-vterm-hook)
+#+end_src
+
 Shamelessly copied from ~u/phalp~ on r/emacs.
 Provides a way to launch a new *vterm* instance with a specific command.
 #+begin_src emacs-lisp
@@ -1310,7 +1337,7 @@ Provides a way to launch a new *vterm* instance with a specific command.
 (and (buffer-live-p b)
         (kill-buffer b))))
 
-(defun luklun/run-in-vterm (command)
+(defun luklun/run-in-vterm (&optional command)
 "Execute string COMMAND in a new vterm.
 
 Interactively, prompt for COMMAND with the current buffer's file
@@ -1334,11 +1361,16 @@ shell exits, the buffer is killed."
                         (cons filename 0)
                         (cons 'shell-command-history 1)
                         (list filename)))))
-(with-current-buffer (vterm (concat "*" command "*"))
-(set-process-sentinel vterm--process #'luklun/run-in-vterm-kill)
-(vterm-send-string command)
-(delete-other-windows)
-(vterm-send-return)))
+(with-current-buffer (vterm (if (not (null command )) (concat "*" command "*")))
+;; (set-process-sentinel vterm--process #'luklun/run-in-vterm-kill)
+(if (not (null command))
+    (progn
+      (vterm-send-string command)
+      (vterm-send-return)))
+(delete-other-windows)))
+;;
+;;
+;; ))
 #+end_src
 
 ** Doom modeline
@@ -1577,7 +1609,7 @@ Let's add some RSS sources to our feed for even more effective procrastination
 (after! elfeed
 
   ;; Set the feed file
-  (setq rmh-elfeed-org-files '("/home/luklun/.org/elfeed.org"))
+  (setq rmh-elfeed-org-files (concat (expand-file-name org-directory) "/elfeed.org"))
 
   (elfeed-org)
   (use-package! elfeed-link)
@@ -2000,7 +2032,8 @@ Let's setup some org-capture templates, and make them visually nice to access.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+  (defvar +org-capture-recipies  "~/org/recipies.org")
+  (defvar +org-capture-emails-file  "~/org/emails.org")
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates
@@ -2015,15 +2048,15 @@ Let's setup some org-capture templates, and make them visually nice to access.
                    )
                   ("Personal note" :keys "n"
                    :icon ("sticky-note-o" :set "faicon" :color "green")
-                   :file +org-capture-todo-file
+                   :file +org-capture-notes-file
                    :prepend t
-                   :headline "Inbox"
+                   :headline "Notes"
                    :type entry
                    :template ("* %?"
                               "%i %a"))
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
-                   :file +org-capture-todo-file
+                   :file +org-capture-emails-file
                    :prepend t
                    :headline "Inbox"
                    :type entry
@@ -2033,7 +2066,7 @@ Let's setup some org-capture templates, and make them visually nice to access.
                               "%U %i %a"))
                   ("Interesting" :keys "i"
                    :icon ("eye" :set "faicon" :color "lcyan")
-                   :file +org-capture-todo-file
+                   :file +org-capture-notes-file
                    :prepend t
                    :headline "Interesting"
                    :type entry
@@ -2259,7 +2292,7 @@ is selected, only the bare key is returned."
 The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
 no modeline.
 #+begin_src emacs-lisp
-(setf (alist-get 'height +org-capture-frame-parameters) 15)
+(setf (alist-get 'height +org-capture-frame-parameters) 60)
 ;; (alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
 (setq +org-capture-fn
       (lambda ()
@@ -2851,4 +2884,25 @@ Adding keybinding for formatting buffers
 (map! :leader
       :desc "Format buffer"
       "b f" '+format/buffer)
+#+end_src
+A scratch pad using emacsclient
+#+begin_src emacs-lisp :tangle "packages.el"
+(package! yequake
+  :recipe (:host github :repo "alphapapa/yequake"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! yequake
+  :config
+  (setq yequake-frames
+      '(("org-capture"
+          (buffer-fns . (yequake-org-capture))
+          (width . 0.35)
+          (height . 0.35)
+          (left . 0.5)
+          (top . 0.5)
+          (alpha . 1)
+          (frame-parameters . ((undecorated . t)
+                               (skip-taskbar . t)
+                               (sticky . t)))))))
 #+end_src
